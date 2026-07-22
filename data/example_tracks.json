@@ -1,0 +1,22 @@
+{
+  "1": {
+    "full": "Code Generation — LLM-based code generation and completion",
+    "short": "Code Gen",
+    "color": "#e6194B"
+  },
+  "2": {
+    "full": "Code Review — automated code review and static analysis with LLMs",
+    "short": "Code Review",
+    "color": "#f58231"
+  },
+  "3": {
+    "full": "Developer Tools — IDE integrations and developer tooling",
+    "short": "Dev Tools",
+    "color": "#3cb44b"
+  },
+  "4": {
+    "full": "Evaluation — benchmarks and evaluation methodologies",
+    "short": "Evaluation",
+    "color": "#4363d8"
+  }
+}

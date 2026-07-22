@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="__RESEARCHTHIS_LANG__"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__RESEARCHTHIS_TITLE__</title>
+<style>
+:root,:root[data-theme="dark"]{
+  --bg:#0f1420;--panel:#171e2e;--card:#1c2740;--card2:#18223a;--ink:#e8edf6;--muted:#93a1c0;--line:#2b3958;--accent:#5b8cff;
+  --header-g1:#141b2b;--header-g2:#101623;--input-bg:#0d1420;--placeholder:#5f6f90;--hover-line:#3d5680;
+  --pill-rel-bg:#123a24;--pill-rel-fg:#7fe3a0;--pill-rel-border:#1d5c39;
+  --pill-related-bg:#2a2340;--pill-related-fg:#c3a9ff;--pill-related-border:#443363;
+  --date-fg:#6f7fa2;
+  --flag-warn-bg:#3a3112;--flag-warn-fg:#ffd873;--flag-warn-border:#5c4d1d;
+  --flag-li-bg:#0a2740;--flag-li-fg:#69b4ff;--flag-li-border:#17466f;
+  --idc-fg:#9fc0ff;--idc-hover-fg:#cfe0ff;--idkind-fg:#5f6f90;
+  --footer-fg:#5f6f90;--footer-link:#8fa8d8;--tb-fg:#0c1018;
+}
+:root[data-theme="light"]{
+  --bg:#f4f6fb;--panel:#ffffff;--card:#ffffff;--card2:#eef1f8;--ink:#1a2233;--muted:#5a6a8a;--line:#dbe1ee;--accent:#3a63d8;
+  --header-g1:#ffffff;--header-g2:#eef1f8;--input-bg:#ffffff;--placeholder:#8a97b3;--hover-line:#b7c3de;
+  --pill-rel-bg:#e2f7ea;--pill-rel-fg:#1f8a4c;--pill-rel-border:#b6e6c7;
+  --pill-related-bg:#efe7ff;--pill-related-fg:#7248c9;--pill-related-border:#d9c8f7;
+  --date-fg:#6b7aa0;
+  --flag-warn-bg:#fff3d0;--flag-warn-fg:#8a6a12;--flag-warn-border:#f0dca0;
+  --flag-li-bg:#e5f1ff;--flag-li-fg:#1f6fc9;--flag-li-border:#bcdcff;
+  --idc-fg:#2f5fc9;--idc-hover-fg:#1a3f99;--idkind-fg:#7583a3;
+  --footer-fg:#7583a3;--footer-link:#3a5aa8;--tb-fg:#0c1018;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);transition:background .15s,color .15s}
+header{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,var(--header-g1),var(--header-g2));border-bottom:1px solid var(--line);padding:16px 24px 12px;}
+.htop{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+h1{font-size:19px;margin:0;font-weight:650;letter-spacing:.2px}
+.sub{color:var(--muted);font-size:13px}
+.fresh{margin-left:auto;font-size:12.5px;color:var(--muted);background:var(--input-bg);border:1px solid var(--line);padding:6px 12px;border-radius:20px}
+.fresh b{color:var(--pill-rel-fg)}
+.counts{color:var(--muted);font-size:12.5px;margin-top:2px}
+.counts b{color:var(--ink)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+input[type=search]{flex:1;min-width:220px;background:var(--input-bg);border:1px solid var(--line);color:var(--ink);padding:9px 13px;border-radius:9px;font-size:14px}
+input[type=search]::placeholder{color:var(--placeholder)}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{background:var(--input-bg);color:var(--muted);border:0;padding:9px 14px;font-size:13px;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff}
+.chiptog{background:var(--input-bg);border:1px solid var(--line);color:var(--muted);padding:9px 12px;border-radius:9px;font-size:13px;cursor:pointer}
+.chiptog.on{border-color:var(--accent);color:var(--ink)}
+.chiptog.icon{padding:8px;display:inline-flex;align-items:center;justify-content:center;line-height:0}
+#themetog{background:var(--input-bg);border:1px solid var(--line);color:var(--ink);padding:9px 12px;border-radius:9px;font-size:13px;cursor:pointer}
+.langflag{font-size:18px;line-height:1}
+.langflag:empty{display:none}
+.legend{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.lg{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);cursor:pointer;padding:4px 9px;border-radius:16px;border:1px solid transparent;user-select:none}
+.lg:hover{border-color:var(--line)}
+.lg.off{opacity:.35}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+main{padding:20px 24px 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:15px}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:13px;padding:15px 16px 14px;display:flex;flex-direction:column;gap:9px;position:relative;transition:transform .08s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--hover-line)}
+.card .stripe{position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:4px}
+.tt{font-size:14.5px;font-weight:600;line-height:1.34;padding-left:8px}
+.auth{font-size:12px;color:var(--muted);padding-left:8px;line-height:1.4}
+.meta{display:flex;gap:7px;flex-wrap:wrap;align-items:center;padding-left:8px;margin-top:1px}
+.pill{font-size:10.5px;padding:2px 8px;border-radius:11px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.pill.rel{background:var(--pill-rel-bg);color:var(--pill-rel-fg);border:1px solid var(--pill-rel-border)}
+.pill.related{background:var(--pill-related-bg);color:var(--pill-related-fg);border:1px solid var(--pill-related-border)}
+.date{font-size:11px;color:var(--date-fg)}
+.badges{display:flex;gap:5px;flex-wrap:wrap;padding-left:8px}
+.tb{font-size:10.5px;padding:2px 8px;border-radius:6px;color:var(--tb-fg);font-weight:650}
+.flags{display:flex;gap:6px;padding-left:8px;flex-wrap:wrap}
+.flag{font-size:11px;padding:2px 8px;border-radius:6px;display:inline-flex;gap:4px;align-items:center}
+.flag.warn{background:var(--flag-warn-bg);color:var(--flag-warn-fg);border:1px solid var(--flag-warn-border)}
+.flag.li{background:var(--flag-li-bg);color:var(--flag-li-fg);border:1px solid var(--flag-li-border)}
+.ids{display:flex;gap:6px;flex-wrap:wrap;padding-left:8px;margin-top:2px}
+.idc{font-size:11px;text-decoration:none;padding:3px 9px;border-radius:7px;background:var(--input-bg);border:1px solid var(--line);color:var(--idc-fg)}
+.idc:hover{border-color:var(--accent);color:var(--idc-hover-fg)}
+.idkind{color:var(--idkind-fg);margin-right:4px;font-weight:600}
+.empty{color:var(--muted);text-align:center;padding:60px;font-size:15px}
+.chatlog{display:flex;flex-direction:column;gap:10px;max-width:640px;margin:0 auto 14px;min-height:120px}
+.cmsg{padding:10px 13px;border-radius:11px;font-size:13.5px;line-height:1.45;max-width:88%;white-space:pre-wrap}
+.cmsg.user{align-self:flex-end;background:var(--accent);color:#fff}
+.cmsg.bot{align-self:flex-start;background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);color:var(--ink)}
+.cmsg.bot.pending{color:var(--muted);font-style:italic}
+.cmsg.hint{align-self:flex-start;background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.csrcs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.csrc{font-size:10.5px;padding:2px 8px;border-radius:7px;background:var(--input-bg);border:1px solid var(--line);color:var(--idc-fg);text-decoration:none;cursor:default}
+a.csrc{cursor:pointer}
+a.csrc:hover{border-color:var(--accent);color:var(--idc-hover-fg)}
+.csrc.zotero{background:var(--pill-related-bg);color:var(--pill-related-fg);border-color:var(--pill-related-border)}
+a.csrc.zotero:hover{border-color:var(--pill-related-fg)}
+.chatbar{display:flex;gap:8px;max-width:640px;margin:0 auto}
+.chatbar input{flex:1;background:var(--input-bg);border:1px solid var(--line);color:var(--ink);padding:9px 13px;border-radius:9px;font-size:14px}
+.chatbar input::placeholder{color:var(--placeholder)}
+.chatbar button{background:var(--accent);color:#fff;border:0;padding:9px 16px;border-radius:9px;font-size:13px;cursor:pointer}
+.chatbar button:disabled{opacity:.5;cursor:default}
+#panel-reels{margin:-20px -24px -60px}
+.reels{height:calc(100dvh - var(--rt-header-h, 140px));overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.reel{scroll-snap-align:start;scroll-snap-stop:always;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;padding:20px 24px;border-bottom:1px solid var(--line);position:relative}
+.reel .stripe{position:absolute;left:0;top:20px;bottom:20px;width:5px;border-radius:4px}
+.reel .rtt{font-size:19px;font-weight:650;line-height:1.3;padding-left:10px;max-width:640px}
+.reel .auth{font-size:12.5px;padding-left:10px}
+.reel .meta,.reel .badges,.reel .flags,.reel .ids{padding-left:10px}
+.reel .rsum{font-size:14px;line-height:1.55;padding-left:10px;max-width:640px;color:var(--ink)}
+.reel .rsum.empty{color:var(--muted);font-style:italic;padding:0 0 0 10px;text-align:left}
+body.tab-reels .langflag,body.tab-reels #themetog,body.tab-reels #zotero-badge{display:none!important}
+footer{color:var(--footer-fg);font-size:11.5px;text-align:center;padding:18px 24px 30px}
+footer a{color:var(--footer-link)}
+</style>
+<script>
+(function(){
+  var saved=localStorage.getItem('rt-theme');
+  var theme=saved||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+  document.documentElement.setAttribute('data-theme',theme);
+})();
+</script>
+</head><body>
+<header>
+ <div class="htop">
+   <h1>__RESEARCHTHIS_HEADING__</h1>
+   <span class="sub">__RESEARCHTHIS_SUBTITLE__</span>
+   <span class="fresh"><span id="lu-label"></span> <b id="lu"></b></span>
+   <span class="fresh" id="zotero-badge" style="display:none"></span>
+   <span class="langflag" id="langflag" title="__RESEARCHTHIS_LANG__">__RESEARCHTHIS_FLAG__</span>
+   <button id="themetog" type="button"></button>
+ </div>
+ <div class="seg" id="tabbar">
+   <button data-tab="findings" class="on"></button>
+   <button data-tab="reels"></button>
+   <button data-tab="zotero"></button>
+   <button data-tab="chat"></button>
+ </div>
+ <div id="panel-head-findings">
+   <div class="counts" id="counts"></div>
+   <div class="controls">
+     <input type="search" id="q">
+     <div class="seg" id="seg">
+       <button data-s="all" class="on"></button>
+       <button data-s="relevant"></button>
+       <button data-s="related"></button>
+     </div>
+     <button class="chiptog" id="ftog" data-f="warn"></button>
+     <button class="chiptog" id="ltog" data-f="li"></button>
+     <div class="seg" id="zseg" style="display:none">
+       <button data-z="all" class="on"></button>
+       <button data-z="in"></button>
+       <button data-z="missing"></button>
+     </div>
+   </div>
+   <div class="legend" id="legend"></div>
+ </div>
+ <div id="panel-head-reels" style="display:none">
+   <div class="controls">
+     <button class="chiptog" id="reelshuffle"></button>
+   </div>
+ </div>
+ <div id="panel-head-zotero" style="display:none">
+   <div class="counts" id="zcounts"></div>
+   <div class="controls" id="zcontrols">
+     <input type="search" id="zq">
+     <button class="chiptog" id="zdoitog"></button>
+   </div>
+ </div>
+</header>
+<main>
+ <div id="panel-findings"><div class="grid" id="grid"></div><div class="empty" id="empty" style="display:none"></div></div>
+ <div id="panel-reels" style="display:none"><div class="reels" id="reels"></div><div class="empty" id="reelsempty" style="display:none"></div></div>
+ <div id="panel-zotero" style="display:none">
+   <div class="empty" id="zstate" style="display:none"></div>
+   <div class="grid" id="zgrid"></div>
+   <div class="empty" id="zempty" style="display:none"></div>
+ </div>
+ <div id="panel-chat" style="display:none">
+   <div class="chatlog" id="chatlog"></div>
+   <form class="chatbar" id="chatform">
+     <input type="text" id="chatinput" maxlength="500" autocomplete="off">
+     <button type="submit" id="chatsend"></button>
+   </form>
+ </div>
+</main>
+<footer id="footer"></footer>
+<script>
+const TRACKS=__RESEARCHTHIS_TRACKS_JSON__, DATA=__RESEARCHTHIS_DATA_JSON__, I18N=__RESEARCHTHIS_I18N_JSON__;
+function fmt(s,vals){return s.replace(/\{(\w+)\}/g,(_,k)=>vals[k]);}
+document.getElementById('lu').textContent=DATA.last_updated;
+document.getElementById('lu-label').textContent=I18N.last_updated_label;
+document.getElementById('q').placeholder=I18N.search_placeholder;
+document.querySelector('#seg [data-s="all"]').textContent=I18N.seg_all;
+document.querySelector('#seg [data-s="relevant"]').textContent=I18N.seg_relevant;
+document.querySelector('#seg [data-s="related"]').textContent=I18N.seg_related;
+document.getElementById('ftog').textContent=I18N.filter_unverified;
+(()=>{
+  const b=document.getElementById('ltog');
+  b.classList.add('icon');
+  b.title=I18N.filter_linkedin;
+  b.setAttribute('aria-label',I18N.filter_linkedin);
+  b.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+})();
+document.querySelector('#zseg [data-z="all"]').textContent=I18N.zseg_all;
+document.querySelector('#zseg [data-z="in"]').textContent=I18N.zseg_in;
+document.querySelector('#zseg [data-z="missing"]').textContent=I18N.zseg_missing;
+document.getElementById('empty').textContent=I18N.empty;
+document.querySelector('#tabbar [data-tab="findings"]').textContent=I18N.tab_findings;
+document.querySelector('#tabbar [data-tab="reels"]').textContent=I18N.tab_reels;
+document.querySelector('#tabbar [data-tab="zotero"]').textContent=I18N.tab_zotero;
+document.querySelector('#tabbar [data-tab="chat"]').textContent=I18N.tab_chat;
+document.getElementById('reelshuffle').textContent=I18N.reels_shuffle;
+document.getElementById('reelsempty').textContent=I18N.reels_empty;
+document.getElementById('chatinput').placeholder=I18N.chat_placeholder;
+document.getElementById('chatsend').textContent=I18N.chat_send;
+if(!DATA.chat_enabled){
+  const chatTabBtn=document.querySelector('#tabbar [data-tab="chat"]');
+  if(chatTabBtn)chatTabBtn.remove();
+  const chatPanel=document.getElementById('panel-chat');
+  if(chatPanel)chatPanel.remove();
+}
+if(!DATA.reels_enabled){
+  const reelsTabBtn=document.querySelector('#tabbar [data-tab="reels"]');
+  if(reelsTabBtn)reelsTabBtn.remove();
+  const reelsHead=document.getElementById('panel-head-reels');
+  if(reelsHead)reelsHead.remove();
+  const reelsPanel=document.getElementById('panel-reels');
+  if(reelsPanel)reelsPanel.remove();
+}
+document.getElementById('zq').placeholder=I18N.search_placeholder;
+document.getElementById('zdoitog').textContent=I18N.zotero_missing_doi_filter;
+document.getElementById('zempty').textContent=I18N.zotero_no_matches;
+document.getElementById('footer').innerHTML=fmt(I18N.footer,{owner:esc(DATA.owner)});
+const recs=DATA.records;
+let state={sec:'all',q:'',warn:false,li:false,zot:'all',offTracks:new Set()};
+let zoteroInSet=null;
+
+const themetog=document.getElementById('themetog');
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('rt-theme',t);
+  themetog.textContent=t==='dark'?I18N.theme_light:I18N.theme_dark;
+  themetog.setAttribute('aria-label',I18N.theme_toggle_aria);
+}
+setTheme(document.documentElement.getAttribute('data-theme')||'dark');
+themetog.onclick=()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+
+const legend=document.getElementById('legend');
+Object.entries(TRACKS).forEach(([id,t])=>{
+  const el=document.createElement('div');el.className='lg';el.dataset.t=id;
+  el.innerHTML=`<span class="dot" style="background:${t.color}"></span>${id}· ${t.short}`;
+  el.onclick=()=>{if(state.offTracks.has(id))state.offTracks.delete(id);else state.offTracks.add(id);el.classList.toggle('off');render();};
+  legend.appendChild(el);
+});
+document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');state.sec=b.dataset.s;render();});
+document.getElementById('q').oninput=e=>{state.q=e.target.value.toLowerCase();render();};
+document.getElementById('ftog').onclick=e=>{state.warn=!state.warn;e.target.classList.toggle('on');render();};
+document.getElementById('ltog').onclick=e=>{state.li=!state.li;e.currentTarget.classList.toggle('on');render();};
+document.querySelectorAll('#zseg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#zseg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');state.zot=b.dataset.z;render();});
+
+const headerEl=document.querySelector('header');
+function updateHeaderHeight(){
+  document.documentElement.style.setProperty('--rt-header-h',headerEl.offsetHeight+'px');
+}
+window.addEventListener('resize',updateHeaderHeight);
+
+document.querySelectorAll('#tabbar button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#tabbar button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  const tab=b.dataset.tab;
+  document.body.classList.toggle('tab-reels',tab==='reels');
+  ['findings','reels','zotero','chat'].forEach(t=>{
+    const head=document.getElementById('panel-head-'+t);
+    if(head)head.style.display=t===tab?'':'none';
+    const panel=document.getElementById('panel-'+t);
+    if(panel)panel.style.display=t===tab?'':'none';
+  });
+  updateHeaderHeight();
+});
+
+let zlibrary=null;
+let zstate={q:'',missingDoi:false};
+document.getElementById('zq').oninput=e=>{zstate.q=e.target.value.toLowerCase();zrender();};
+document.getElementById('zdoitog').onclick=e=>{zstate.missingDoi=!zstate.missingDoi;e.target.classList.toggle('on');zrender();};
+
+function zoteroTabMessage(msg){
+  document.getElementById('zcontrols').style.display='none';
+  document.getElementById('zcounts').textContent='';
+  document.getElementById('zgrid').innerHTML='';
+  document.getElementById('zempty').style.display='none';
+  const el=document.getElementById('zstate');
+  el.textContent=msg;el.style.display='block';
+}
+function zpasses(r){
+  if(zstate.missingDoi&&!r.missing_doi)return false;
+  if(zstate.q&&!(r.title.toLowerCase().includes(zstate.q)||r.creators.toLowerCase().includes(zstate.q)))return false;
+  return true;
+}
+function zcard(r){
+  const idBlock=r.doi
+    ?`<div class="ids"><a class="idc" href="${esc('https://doi.org/'+r.doi)}" target="_blank" rel="noopener"><span class="idkind">DOI</span>${esc(r.doi)}</a></div>`
+    :`<div class="flags"><span class="flag warn">${esc(I18N.zotero_flag_missing_doi)}</span></div>`;
+  return `<div class="card"><div class="stripe" style="background:var(--accent)"></div>
+    <div class="meta"><span class="pill related">${esc(r.item_type)}</span><span class="date">${esc(r.date)}</span></div>
+    <div class="tt">${esc(r.title)}</div>
+    <div class="auth">${esc(r.creators)}</div>
+    ${idBlock}
+  </div>`;
+}
+function zrender(){
+  if(!zlibrary)return;
+  const shown=zlibrary.filter(zpasses);
+  document.getElementById('zgrid').innerHTML=shown.map(zcard).join('');
+  document.getElementById('zempty').style.display=shown.length?'none':'block';
+  const inFeed=zlibrary.filter(r=>r.in_feed).length;
+  document.getElementById('zcounts').innerHTML=fmt(I18N.zotero_counts,{shown:shown.length,total:zlibrary.length,inFeed});
+}
+
+fetch('/api/v1/zotero').then(r=>r.json()).then(z=>{
+  if(!z.configured){zoteroTabMessage(I18N.zotero_unconfigured);return;}
+  if(!z.report){
+    zoteroTabMessage(z.last_error?`${I18N.zotero_fetch_error} (${z.last_error})`:I18N.zotero_fetch_error);
+    return;
+  }
+  const el=document.getElementById('zotero-badge');
+  el.innerHTML=fmt(I18N.zotero_summary,{count:`<b>${z.report.summary.already_in_zotero}</b>`,total:z.report.summary.total_findings});
+  el.style.display='';
+  zoteroInSet=new Set(z.report.already_in_zotero.map(x=>x.raw_id));
+  document.getElementById('zseg').style.display='';
+  render();
+
+  zlibrary=z.report.library||[];
+  if(!zlibrary.length){zoteroTabMessage(I18N.zotero_library_empty);return;}
+  zrender();
+}).catch(()=>{});
+
+if(DATA.chat_enabled){
+  const chatlog=document.getElementById('chatlog');
+  const chatform=document.getElementById('chatform');
+  const chatinput=document.getElementById('chatinput');
+  const chatsend=document.getElementById('chatsend');
+  let chatBusy=false;
+
+  const addChatMsg=(role,text)=>{
+    const el=document.createElement('div');
+    el.className='cmsg '+role;
+    el.textContent=text;
+    chatlog.appendChild(el);
+    chatlog.scrollTop=chatlog.scrollHeight;
+    return el;
+  };
+  addChatMsg('bot hint',I18N.chat_welcome);
+
+  chatform.onsubmit=e=>{
+    e.preventDefault();
+    if(chatBusy)return;
+    const q=chatinput.value.trim();
+    if(!q)return;
+    addChatMsg('user',q);
+    chatinput.value='';
+    chatBusy=true;chatinput.disabled=true;chatsend.disabled=true;
+    const pending=addChatMsg('bot pending',I18N.chat_thinking);
+    fetch('/api/v1/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
+      .then(r=>r.json().then(data=>({status:r.status,ok:r.ok,data})))
+      .then(({status,ok,data})=>{
+        pending.classList.remove('pending');
+        if(!ok){
+          pending.textContent=status===503?I18N.chat_unconfigured:I18N.chat_error;
+          return;
+        }
+        pending.textContent=data.answer;
+        const sources=data.sources||[];
+        if(sources.length){
+          const box=document.createElement('div');
+          box.className='csrcs';
+          box.innerHTML=sources.map(s=>{
+            const cls='csrc'+(s.type==='zotero'?' zotero':'');
+            const label=s.type==='zotero'?I18N.chat_source_zotero_title:I18N.chat_source_finding_title;
+            return s.url
+              ?`<a class="${cls}" href="${esc(s.url)}" title="${esc(label)}" target="_blank" rel="noopener">${esc(s.title)}</a>`
+              :`<span class="${cls}" title="${esc(label)}">${esc(s.title)}</span>`;
+          }).join('');
+          pending.appendChild(box);
+        }
+      })
+      .catch(()=>{pending.classList.remove('pending');pending.textContent=I18N.chat_error;})
+      .finally(()=>{chatBusy=false;chatinput.disabled=false;chatsend.disabled=false;chatinput.focus();});
+  };
+}
+
+function passes(r){
+  if(state.sec!=='all'&&r.section!==state.sec)return false;
+  if(state.warn&&!r.warn)return false;
+  if(state.li&&!r.linkedin)return false;
+  if(state.q&&!(r.title.toLowerCase().includes(state.q)||r.authors.toLowerCase().includes(state.q)))return false;
+  if(state.offTracks.size){ if(!r.tracks.some(t=>!state.offTracks.has(String(t))))return false; }
+  if(zoteroInSet&&state.zot!=='all'){
+    const inZotero=zoteroInSet.has(r.raw_id);
+    if(state.zot==='in'&&!inZotero)return false;
+    if(state.zot==='missing'&&inZotero)return false;
+  }
+  return true;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function card(r){
+  const primary=r.tracks[0]?TRACKS[r.tracks[0]].color:'#334';
+  const badges=r.tracks.map(t=>`<span class="tb" style="background:${TRACKS[t].color}">${t} ${esc(TRACKS[t].short)}</span>`).join('');
+  const ids=r.ids.map(i=>`<a class="idc" href="${esc(i.url)}" target="_blank" rel="noopener"><span class="idkind">${esc(i.kind)}</span>${esc(i.label)}</a>`).join('');
+  const flags=[r.warn?`<span class="flag warn">${esc(I18N.flag_unverified)}</span>`:'',r.linkedin?`<span class="flag li">${esc(I18N.flag_linkedin)}</span>`:''].join('');
+  return `<div class="card"><div class="stripe" style="background:${primary}"></div>
+    <div class="meta"><span class="pill ${r.section==='relevant'?'rel':'related'}">${esc(r.section==='relevant'?I18N.pill_relevant:I18N.pill_related)}</span><span class="date">${esc(r.date_found)}</span></div>
+    <div class="tt">${esc(r.title)}</div>
+    <div class="auth">${esc(r.authors)}</div>
+    <div class="badges">${badges}</div>
+    ${flags.trim()?`<div class="flags">${flags}</div>`:''}
+    ${ids?`<div class="ids">${ids}</div>`:''}
+  </div>`;
+}
+function render(){
+  const shown=recs.filter(passes);
+  document.getElementById('grid').innerHTML=shown.map(card).join('');
+  document.getElementById('empty').style.display=shown.length?'none':'block';
+  const nrel=recs.filter(r=>r.section==='relevant').length, nrl=recs.length-nrel;
+  document.getElementById('counts').innerHTML=fmt(I18N.counts,{shown:shown.length,total:recs.length,relevant:nrel,related:nrl,tracks:Object.keys(TRACKS).length});
+}
+render();
+updateHeaderHeight();
+
+let reelsOrder=[];
+function reelCard(r){
+  const primary=r.tracks[0]?TRACKS[r.tracks[0]].color:'#334';
+  const badges=r.tracks.map(t=>`<span class="tb" style="background:${TRACKS[t].color}">${t} ${esc(TRACKS[t].short)}</span>`).join('');
+  const ids=r.ids.map(i=>`<a class="idc" href="${esc(i.url)}" target="_blank" rel="noopener"><span class="idkind">${esc(i.kind)}</span>${esc(i.label)}</a>`).join('');
+  const flags=[r.warn?`<span class="flag warn">${esc(I18N.flag_unverified)}</span>`:'',r.linkedin?`<span class="flag li">${esc(I18N.flag_linkedin)}</span>`:''].join('');
+  const summary=(r.summary&&r.summary.trim())
+    ?`<div class="rsum">${esc(r.summary)}</div>`
+    :`<div class="rsum empty">${esc(I18N.reels_no_summary)}</div>`;
+  return `<div class="reel"><div class="stripe" style="background:${primary}"></div>
+    <div class="meta"><span class="pill ${r.section==='relevant'?'rel':'related'}">${esc(r.section==='relevant'?I18N.pill_relevant:I18N.pill_related)}</span><span class="date">${esc(r.date_found)}</span></div>
+    <div class="rtt">${esc(r.title)}</div>
+    <div class="auth">${esc(r.authors)}</div>
+    <div class="badges">${badges}</div>
+    ${summary}
+    ${flags.trim()?`<div class="flags">${flags}</div>`:''}
+    ${ids?`<div class="ids">${ids}</div>`:''}
+  </div>`;
+}
+function renderReels(){
+  const el=document.getElementById('reels');
+  el.innerHTML=reelsOrder.map(reelCard).join('');
+  document.getElementById('reelsempty').style.display=reelsOrder.length?'none':'block';
+  el.scrollTop=0;
+}
+function shuffleReels(){
+  reelsOrder=recs.slice();
+  for(let i=reelsOrder.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [reelsOrder[i],reelsOrder[j]]=[reelsOrder[j],reelsOrder[i]];
+  }
+  renderReels();
+}
+if(DATA.reels_enabled){
+  document.getElementById('reelshuffle').onclick=shuffleReels;
+  shuffleReels();
+}
+</script></body></html>

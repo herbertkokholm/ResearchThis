@@ -1,0 +1,10 @@
+{
+  "feed_id": "example-feed",
+  "heading": "Example Research Feed",
+  "subtitle": "Replace this with your own feed's title and description",
+  "owner": "Your Name",
+  "language": "en",
+  "flag": "🇬🇧",
+  "chat_enabled": false,
+  "reels_enabled": true
+}

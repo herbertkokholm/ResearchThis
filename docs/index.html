@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ResearchThis Portal</title>
+  <meta name="description"
+    content="Turn a curated literature-surveillance feed into a filterable, shareable gallery — queryable by your own Claude via MCP.">
+  <style>
+    :root,
+    :root[data-theme="dark"] {
+      --bg: #0f1420;
+      --panel: #171e2e;
+      --card: #1c2740;
+      --card2: #18223a;
+      --ink: #e8edf6;
+      --muted: #93a1c0;
+      --line: #2b3958;
+      --accent: #5b8cff;
+      --header-g1: #141b2b;
+      --header-g2: #101623;
+      --input-bg: #0d1420;
+      --hover-line: #3d5680;
+      --pill-rel-bg: #123a24;
+      --pill-rel-fg: #7fe3a0;
+      --pill-rel-border: #1d5c39;
+      --pill-related-bg: #2a2340;
+      --pill-related-fg: #c3a9ff;
+      --pill-related-border: #443363;
+      --date-fg: #6f7fa2;
+      --tb-fg: #0c1018;
+      --footer-fg: #5f6f90;
+      --footer-link: #8fa8d8;
+      --code-bg: #0d1420;
+      --code-fg: #cfe0ff;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f4f6fb;
+      --panel: #ffffff;
+      --card: #ffffff;
+      --card2: #eef1f8;
+      --ink: #1a2233;
+      --muted: #5a6a8a;
+      --line: #dbe1ee;
+      --accent: #3a63d8;
+      --header-g1: #ffffff;
+      --header-g2: #eef1f8;
+      --input-bg: #ffffff;
+      --hover-line: #b7c3de;
+      --pill-rel-bg: #e2f7ea;
+      --pill-rel-fg: #1f8a4c;
+      --pill-rel-border: #b6e6c7;
+      --pill-related-bg: #efe7ff;
+      --pill-related-fg: #7248c9;
+      --pill-related-border: #d9c8f7;
+      --date-fg: #6b7aa0;
+      --tb-fg: #0c1018;
+      --footer-fg: #7583a3;
+      --footer-link: #3a5aa8;
+      --code-bg: #eef1f8;
+      --code-fg: #1a3f99;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      transition: background .15s, color .15s
+    }
+
+    a {
+      color: var(--footer-link)
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, var(--header-g1), var(--header-g2));
+      border-bottom: 1px solid var(--line);
+      padding: 14px 24px
+    }
+
+    .htop {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .htop h1 {
+      font-size: 16px;
+      margin: 0;
+      font-weight: 650;
+      letter-spacing: .2px;
+      flex: 1
+    }
+
+    .htop nav {
+      display: flex;
+      gap: 18px;
+      font-size: 13.5px
+    }
+
+    .htop nav a {
+      color: var(--muted);
+      text-decoration: none
+    }
+
+    .htop nav a:hover {
+      color: var(--ink)
+    }
+
+    #themetog {
+      background: var(--input-bg);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 7px 11px;
+      border-radius: 9px;
+      font-size: 12.5px;
+      cursor: pointer
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 24px
+    }
+
+    .hero {
+      padding: 64px 0 48px;
+      text-align: center
+    }
+
+    .hero h2 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      margin: 0 0 14px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      line-height: 1.15
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 620px;
+      margin: 0 auto 30px;
+      line-height: 1.55
+    }
+
+    .cta {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-size: 14.5px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid transparent
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #fff
+    }
+
+    .btn.ghost {
+      background: var(--input-bg);
+      color: var(--ink);
+      border-color: var(--line)
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--hover-line)
+    }
+
+    section {
+      padding: 44px 0;
+      border-top: 1px solid var(--line)
+    }
+
+    section h3 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      margin: 0 0 8px;
+      font-weight: 700
+    }
+
+    section h4 {
+      font-size: 24px;
+      margin: 0 0 14px;
+      font-weight: 700;
+      letter-spacing: -.2px
+    }
+
+    section p.lead {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 680px
+    }
+
+    .flow {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      flex-wrap: wrap;
+      margin-top: 28px
+    }
+
+    .flow .step {
+      flex: 1;
+      min-width: 190px;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 16px 18px;
+      margin: 6px
+    }
+
+    .flow .step b {
+      display: block;
+      font-size: 13.5px;
+      margin-bottom: 5px
+    }
+
+    .flow .step span {
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.5
+    }
+
+    .flow .arrow {
+      align-self: center;
+      color: var(--muted);
+      font-size: 20px;
+      padding: 0 4px
+    }
+
+    .mock {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 13px;
+      margin-top: 24px
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 14px 15px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative
+    }
+
+    .card .stripe {
+      position: absolute;
+      left: 0;
+      top: 13px;
+      bottom: 13px;
+      width: 4px;
+      border-radius: 4px
+    }
+
+    .card .tt {
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.34;
+      padding-left: 8px
+    }
+
+    .card .auth {
+      font-size: 11.5px;
+      color: var(--muted);
+      padding-left: 8px
+    }
+
+    .card .meta {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      padding-left: 8px
+    }
+
+    .pill {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 11px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      text-transform: uppercase
+    }
+
+    .pill.rel {
+      background: var(--pill-rel-bg);
+      color: var(--pill-rel-fg);
+      border: 1px solid var(--pill-rel-border)
+    }
+
+    .pill.related {
+      background: var(--pill-related-bg);
+      color: var(--pill-related-fg);
+      border: 1px solid var(--pill-related-border)
+    }
+
+    .card .date {
+      font-size: 10.5px;
+      color: var(--date-fg)
+    }
+
+    .card .badges {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      padding-left: 8px
+    }
+
+    .tb {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      color: var(--tb-fg);
+      font-weight: 650
+    }
+
+    .card .ids {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding-left: 8px;
+      margin-top: 2px
+    }
+
+    .idc {
+      font-size: 11px;
+      text-decoration: none;
+      padding: 3px 9px;
+      border-radius: 7px;
+      background: var(--input-bg);
+      border: 1px solid var(--line);
+      color: var(--accent)
+    }
+
+    .idc:hover {
+      border-color: var(--accent)
+    }
+
+    .idkind {
+      color: var(--muted);
+      margin-right: 4px;
+      font-weight: 600
+    }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px
+    }
+
+    .feat {
+      padding: 0
+    }
+
+    .feat b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px
+    }
+
+    .feat span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55
+    }
+
+    .mcp-panel {
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-top: 24px
+    }
+
+    .mcp-panel h5 {
+      font-size: 14px;
+      margin: 0 0 10px
+    }
+
+    .mcp-panel ol {
+      margin: 0 0 4px;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.7
+    }
+
+    code,
+    pre {
+      font-family: "SF Mono", Menlo, Consolas, monospace
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 12px 14px;
+      border-radius: 9px;
+      font-size: 12.5px;
+      overflow-x: auto;
+      margin: 10px 0 18px
+    }
+
+    .mcp-tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 10px;
+      margin-top: 6px
+    }
+
+    .mcp-tools div {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px 12px
+    }
+
+    .mcp-tools code {
+      font-size: 12px;
+      color: var(--accent)
+    }
+
+    .mcp-tools span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+      line-height: 1.4
+    }
+
+    .pgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 24px
+    }
+
+    .pcard {
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 16px 18px
+    }
+
+    .pcard b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 7px
+    }
+
+    .pcard span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55
+    }
+
+    footer {
+      color: var(--footer-fg);
+      font-size: 12px;
+      text-align: center;
+      padding: 36px 24px 44px;
+      border-top: 1px solid var(--line);
+      margin-top: 20px
+    }
+
+    footer a {
+      color: var(--footer-link)
+    }
+
+    footer .links {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap
+    }
+  </style>
+  <script>
+    (function () {
+      var saved = localStorage.getItem('rt-theme');
+      var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <header>
+    <div class="htop">
+      <h1>ResearchThis Portal</h1>
+      <nav>
+        <a href="#mcp">MCP</a>
+        <a href="#features">Features</a>
+        <a href="#principles">Principles</a>
+        <a href="https://github.com/herbertkokholm/ResearchThis" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+      <button id="themetog" type="button">Light</button>
+    </div>
+  </header>
+
+  <div class="hero wrap">
+    <h2>A curated literature feed,<br>rendered as a gallery — and queryable by your own Claude.</h2>
+    <p>Whatever produces findings uploads a versioned JSON contract to S3. The
+      portal renders it as a filterable card gallery. An MCP server sits next
+      to it, so Claude Desktop or Claude Code can query the same feed directly
+      — no dashboard, no copy-pasting, nothing to install.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://researchthis-portal.onrender.com" target="_blank" rel="noopener">Open the live portal</a>
+      <a class="btn ghost" href="#mcp">Connect via MCP</a>
+      <a class="btn ghost" href="https://github.com/herbertkokholm/ResearchThis" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <h3>How it works</h3>
+      <h4>Three JSON files in, a live gallery out</h4>
+      <p class="lead">No redeploy needed to publish new findings — the portal
+        polls S3 on a short TTL (or an immediate <code>/refresh</code>), so
+        updating the feed is just an upload.</p>
+      <div class="flow">
+        <div class="step"><b>1. S3 (source of truth)</b><span>findings.json, tracks.json, feed.json — a versioned data
+            contract, uploaded by whatever produces findings.</span></div>
+        <div class="arrow">→</div>
+        <div class="step"><b>2. Portal re-fetches</b><span>TTL-based cache, or forced via <code>/refresh</code>.
+            Malformed uploads are rejected — the last known-good data keeps serving.</span></div>
+        <div class="arrow">→</div>
+        <div class="step"><b>3. Gallery + MCP</b><span>Same data, two access paths: the browser gallery for humans, MCP
+            tools for your own AI client.</span></div>
+      </div>
+
+      <div class="mock">
+        <div class="card">
+          <div class="stripe" style="background:#5b8cff"></div>
+          <div class="meta"><span class="pill rel">Relevant</span><span class="date">2025-01-15</span></div>
+          <div class="tt">Agentic Retrieval-Augmented Generation: A Survey on Agentic RAG</div>
+          <div class="auth">Singh, Ehtesham, et al.</div>
+          <div class="badges"><span class="tb" style="background:#5b8cff">RAG</span><span class="tb"
+              style="background:#c3a9ff">Survey</span></div>
+          <div class="ids"><a class="idc" href="https://arxiv.org/abs/2501.09136" target="_blank"
+              rel="noopener"><span class="idkind">arXiv</span>2501.09136</a></div>
+        </div>
+        <div class="card">
+          <div class="stripe" style="background:#c3a9ff"></div>
+          <div class="meta"><span class="pill rel">Relevant</span><span class="date">2025-03-30</span></div>
+          <div class="tt">Model Context Protocol (MCP): Landscape, Security Threats, and Future Research
+            Directions</div>
+          <div class="auth">Hou, Zhao, Wang, Wang</div>
+          <div class="badges"><span class="tb" style="background:#c3a9ff">MCP</span><span class="tb"
+              style="background:#ffd873">Security</span></div>
+          <div class="ids"><a class="idc" href="https://arxiv.org/abs/2503.23278" target="_blank"
+              rel="noopener"><span class="idkind">arXiv</span>2503.23278</a></div>
+        </div>
+        <div class="card">
+          <div class="stripe" style="background:#7fe3a0"></div>
+          <div class="meta"><span class="pill related">Related</span><span class="date">2026-03-24</span></div>
+          <div class="tt">The Evolution of Tool Use in LLM Agents: From Single-Tool Call to Multi-Tool
+            Orchestration</div>
+          <div class="auth">Xu, Li, Ma, et al.</div>
+          <div class="badges"><span class="tb" style="background:#7fe3a0">Agents</span><span class="tb"
+              style="background:#5b8cff">Tool Use</span></div>
+          <div class="ids"><a class="idc" href="https://arxiv.org/abs/2603.22862" target="_blank"
+              rel="noopener"><span class="idkind">arXiv</span>2603.22862</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mcp">
+      <h3>MCP access</h3>
+      <h4>Point your own Claude at the feed</h4>
+      <p class="lead">The MCP server is a thin, read-only HTTP client of the
+        portal's own public routes — hosted remotely, so there's nothing to
+        install or run locally on any machine.</p>
+
+      <div class="mcp-panel">
+        <h5>Claude Desktop</h5>
+        <ol>
+          <li>Settings → Connectors → Add → "Add custom connector"</li>
+          <li>Paste the MCP service URL with <code>/mcp</code> appended</li>
+        </ol>
+        <pre>https://researchthis-mcp.onrender.com/mcp</pre>
+
+        <h5>Claude Code</h5>
+        <pre>claude mcp add --transport http researchthis-portal \
+  https://researchthis-mcp.onrender.com/mcp</pre>
+
+        <h5>Available tools</h5>
+        <div class="mcp-tools">
+          <div><code>search_findings(...)</code><span>Filter by section, track, warn flag, keyword</span></div>
+          <div><code>get_findings_meta()</code><span>Counts, freshness, theme-track taxonomy</span></div>
+          <div><code>search_zotero_library(query)</code><span>Search the connected Zotero library</span></div>
+          <div><code>get_zotero_reconciliation()</code><span>What's in both sources, what's missing from Zotero</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <h3>Features</h3>
+      <h4>Built for a feed that changes, not a one-off report</h4>
+      <div class="feat-grid">
+        <div class="feat"><b>Filter & search</b><span>By section, theme track, keyword, unverified/LinkedIn flags —
+            client-side, instant.</span></div>
+        <div class="feat"><b>Freshness stamp</b><span>Shows exactly when the underlying data was last updated, not just
+            when the page loaded.</span></div>
+        <div class="feat"><b>Zotero reconciliation</b><span>Read-only DOI/arXiv match against a connected Zotero library
+            — what's already there, what's missing.</span></div>
+        <div class="feat"><b>Reels view</b><span>Swipe vertically through findings, TikTok-style, each with a short
+            written summary — off by default.</span></div>
+        <div class="feat"><b>Optional in-app chat</b><span>Ask free-text questions over the feed, off by default — or
+            skip it and use MCP instead.</span></div>
+        <div class="feat"><b>PIN-gated deploys</b><span>Optional HTTP Basic auth on every route except the health
+            check.</span></div>
+        <div class="feat"><b>No redeploy to update</b><span>New findings are an S3 upload, not a code change.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="principles">
+      <h3>Design principles</h3>
+      <h4>Why it's safe to point real data at</h4>
+      <p class="lead">A few constraints the portal is built around — not
+        features, but things it deliberately refuses to do.</p>
+      <div class="pgrid">
+        <div class="pcard"><b>Versioned, not vibes</b><span>Every payload carries a contract version. An unsupported
+            version, or any malformed payload, is rejected outright — no silent breaking changes.</span></div>
+        <div class="pcard"><b>Never break, always degrade</b><span>An S3 outage or a bad upload never takes the gallery
+            down. It falls back to the last known-good data instead.</span></div>
+        <div class="pcard"><b>Read-only Zotero, permanently</b><span>Word documents cite Zotero items by key. A write
+            path that could ever change a key is out of scope — not missing, refused.</span></div>
+        <div class="pcard"><b>Producer and portal share nothing but the wire</b><span>Whatever generates findings
+            doesn't need to know the portal's color scheme or page heading, and vice versa. Either side evolves
+            independently.</span></div>
+        <div class="pcard"><b>No default upload path</b><span>Every upload requires an explicit target, so bundled
+            example data is never one missing argument away from overwriting the real feed.</span></div>
+        <div class="pcard"><b>Stateless by design</b><span>No durable local state. The process can restart or move hosts
+            with nothing lost — everything durable lives in S3.</span></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="links">
+      <a href="https://github.com/herbertkokholm/ResearchThis" target="_blank" rel="noopener">GitHub</a>
+      <a href="#principles">Design principles</a>
+      <a href="#mcp">MCP setup</a>
+    </div>
+    ResearchThis Portal — MIT licensed.
+  </footer>
+
+  <script>
+    var themetog = document.getElementById('themetog');
+    function setTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('rt-theme', t);
+      themetog.textContent = t === 'dark' ? 'Light' : 'Dark';
+    }
+    setTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    themetog.onclick = function () { setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+name: Prune deployment history
+
+on:
+  deployment_status:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  deployments: write
+
+concurrency:
+  group: prune-deployments
+  cancel-in-progress: true
+
+jobs:
+  prune:
+    if: github.event_name != 'deployment_status' || github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Keep only the latest deployment per environment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          ids=$(gh api "repos/$REPO/deployments" --paginate --jq '
+            group_by(.environment)
+            | map(sort_by(.created_at) | reverse | .[1:])
+            | flatten
+            | .[].id
+          ')
+
+          if [ -z "$ids" ]; then
+            echo "Nothing to prune."
+            exit 0
+          fi
+
+          for id in $ids; do
+            echo "Deactivating and deleting deployment $id"
+            gh api -X POST "repos/$REPO/deployments/$id/statuses" \
+              -f state=inactive \
+              -H "Accept: application/vnd.github.ant-man-preview+json" > /dev/null
+            gh api -X DELETE "repos/$REPO/deployments/$id"
+          done

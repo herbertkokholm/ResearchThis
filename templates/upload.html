@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload findings — ResearchThis Portal</title>
+<style>
+:root,:root[data-theme="dark"]{
+  --bg:#0f1420;--panel:#171e2e;--card:#1c2740;--ink:#e8edf6;--muted:#93a1c0;--line:#2b3958;--accent:#5b8cff;
+  --input-bg:#0d1420;--placeholder:#5f6f90;--hover-line:#3d5680;
+  --ok-bg:#123a24;--ok-fg:#7fe3a0;--ok-border:#1d5c39;
+  --err-bg:#3a1414;--err-fg:#ff9d9d;--err-border:#5c1d1d;
+}
+:root[data-theme="light"]{
+  --bg:#f4f6fb;--panel:#ffffff;--card:#ffffff;--ink:#1a2233;--muted:#5a6a8a;--line:#dbe1ee;--accent:#3a63d8;
+  --input-bg:#ffffff;--placeholder:#8a97b3;--hover-line:#b7c3de;
+  --ok-bg:#e2f7ea;--ok-fg:#1f8a4c;--ok-border:#b6e6c7;
+  --err-bg:#fdeaea;--err-fg:#a32020;--err-border:#f0b8b8;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--panel);border-bottom:1px solid var(--line);padding:16px 24px}
+h1{font-size:19px;margin:0;font-weight:650}
+.sub{color:var(--muted);font-size:13px;margin-top:4px}
+main{max-width:640px;margin:0 auto;padding:32px 24px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:22px}
+.card + .card{margin-top:18px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:40px 20px;text-align:center;color:var(--muted);cursor:pointer;transition:border-color .12s,background .12s}
+.drop.over{border-color:var(--accent);background:var(--input-bg)}
+.drop b{color:var(--ink)}
+.row{display:flex;gap:10px;margin-top:4px}
+input[type=url]{flex:1;background:var(--input-bg);border:1px solid var(--line);color:var(--ink);padding:10px 13px;border-radius:9px;font-size:14px}
+input[type=url]::placeholder{color:var(--placeholder)}
+button{background:var(--accent);color:#fff;border:0;padding:10px 16px;border-radius:9px;font-size:14px;cursor:pointer;font-weight:600}
+button:disabled{opacity:.5;cursor:default}
+label.h{font-size:13px;color:var(--muted);display:block;margin-bottom:8px}
+#status{margin-top:16px;padding:12px 14px;border-radius:9px;font-size:13.5px;display:none;white-space:pre-wrap}
+#status.ok{display:block;background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-border)}
+#status.err{display:block;background:var(--err-bg);color:var(--err-fg);border:1px solid var(--err-border)}
+a.back{color:var(--muted);font-size:13px;text-decoration:none}
+</style>
+<script>
+(function(){
+  var saved=localStorage.getItem('rt-theme');
+  var theme=saved||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+  document.documentElement.setAttribute('data-theme',theme);
+})();
+</script>
+</head><body>
+<header>
+  <h1>Upload findings</h1>
+  <div class="sub">Drop a findings JSON file, or fetch one from a URL. It's validated against the contract before it's written to S3.</div>
+</header>
+<main>
+  <div class="card">
+    <label class="h">Drag &amp; drop a .json file</label>
+    <div class="drop" id="drop">
+      <div>Drop file here, or <b>click to choose</b></div>
+      <input type="file" id="file" accept=".json,application/json" style="display:none">
+    </div>
+  </div>
+  <div class="card">
+    <label class="h" for="url">...or fetch from a URL</label>
+    <div class="row">
+      <input type="url" id="url" placeholder="https://example.com/findings.json">
+      <button id="fetchBtn" type="button">Fetch &amp; upload</button>
+    </div>
+  </div>
+  <div id="status"></div>
+  <p><a class="back" href="/">&larr; back to portal</a></p>
+</main>
+<script>
+const dropEl = document.getElementById('drop');
+const fileEl = document.getElementById('file');
+const urlEl = document.getElementById('url');
+const fetchBtn = document.getElementById('fetchBtn');
+const statusEl = document.getElementById('status');
+
+function showStatus(ok, text) {
+  statusEl.className = ok ? 'ok' : 'err';
+  statusEl.textContent = text;
+}
+
+async function handleResponse(resp) {
+  let body;
+  try { body = await resp.json(); } catch (e) { body = null; }
+  if (resp.ok) {
+    const r = body || {};
+    showStatus(true, `Uploaded ${r.records ?? '?'} record(s) -> s3://${r.bucket}/${r.key}\nLast modified: ${r.last_modified}`);
+  } else {
+    showStatus(false, (body && body.error) || `Upload failed (HTTP ${resp.status})`);
+  }
+}
+
+async function uploadBody(bodyText) {
+  showStatus(true, 'Uploading...');
+  try {
+    const resp = await fetch('/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: bodyText,
+    });
+    await handleResponse(resp);
+  } catch (e) {
+    showStatus(false, 'Upload failed: ' + e);
+  }
+}
+
+async function uploadFromUrl(url) {
+  showStatus(true, 'Fetching & uploading...');
+  try {
+    const resp = await fetch('/upload?url=' + encodeURIComponent(url), { method: 'POST' });
+    await handleResponse(resp);
+  } catch (e) {
+    showStatus(false, 'Upload failed: ' + e);
+  }
+}
+
+dropEl.addEventListener('click', () => fileEl.click());
+fileEl.addEventListener('change', () => {
+  if (fileEl.files[0]) fileEl.files[0].text().then(uploadBody);
+});
+['dragover', 'dragenter'].forEach(ev => dropEl.addEventListener(ev, e => {
+  e.preventDefault(); dropEl.classList.add('over');
+}));
+['dragleave', 'dragend'].forEach(ev => dropEl.addEventListener(ev, () => dropEl.classList.remove('over')));
+dropEl.addEventListener('drop', e => {
+  e.preventDefault();
+  dropEl.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f) f.text().then(uploadBody);
+});
+fetchBtn.addEventListener('click', () => {
+  const url = urlEl.value.trim();
+  if (url) uploadFromUrl(url);
+});
+</script>
+</body></html>

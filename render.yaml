@@ -1,0 +1,80 @@
+services:
+  - type: web
+    name: researchthis-portal
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 -u -m app.server --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    buildFilter:
+      ignoredPaths:
+        - "README.md"
+        - "docs/**"
+    envVars:
+      # requirements.txt includes mcp (needs Python 3.10+, shared by both
+      # services below); pinned explicitly rather than relying on
+      # whatever Render's account/service-creation-date default happens
+      # to be (see their Python-version docs).
+      - key: PYTHON_VERSION
+        value: 3.14.3
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: eu-north-1
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ROOT_FOLDER
+        value: ResearchThis/
+      # Each falls back to the bundled data/example_* file if unset or
+      # unreachable -- see app/s3sync.py.
+      - key: S3_FINDINGS_KEY
+        value: findings.json
+      - key: S3_TRACKS_KEY
+        value: tracks.json
+      - key: S3_FEED_KEY
+        value: feed.json
+      - key: PAGE_PIN
+        sync: false
+      # Read by app/zotero_store.py, exposed via GET /api/v1/zotero.
+      # Optional: without these the portal just serves {"configured": false}.
+      - key: ZOTERO_LIBRARY_ID
+        sync: false
+      - key: ZOTERO_LIBRARY_TYPE
+        value: user
+      - key: ZOTERO_APP_KEY
+        sync: false
+      # Read by app/chat.py, backs POST /api/v1/chat.
+      # Optional: without OPENAI_API_KEY the endpoint just returns 503.
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+
+  # Hosts app/mcp_server.py as a remote MCP server (streamable-http
+  # transport) -- a thin HTTP client of researchthis-portal's own public
+  # routes above, so an MCP client (Claude Desktop, Claude Code) can be
+  # pointed straight at this service's URL with nothing to install or run
+  # locally on any machine. Needs no AWS/Zotero secrets of its own.
+  - type: web
+    name: researchthis-mcp
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 -u -m app.mcp_server
+    healthCheckPath: /wake
+    buildFilter:
+      ignoredPaths:
+        - "README.md"
+        - "docs/**"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      # Not a secret, but deliberately not given a `value:` here either --
+      # see README's "MCP access" > "Deploying to Render" for what to set
+      # it to. Keeping it out of committed render.yaml means there's no
+      # default anywhere (code or config) for which portal this proxies;
+      # see app/mcp_server.py's module docstring for why that's the point.
+      - key: RESEARCHTHIS_PORTAL_URL
+        sync: false

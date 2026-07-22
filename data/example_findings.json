@@ -1,0 +1,239 @@
+{
+  "contract_version": "1.1",
+  "last_updated": "2026-01-15",
+  "records": [
+    {
+      "date_found": "2026-01-01",
+      "title": "Automated Code Review with Large Language Models: A Systematic Evaluation",
+      "authors": "A. Example, B. Sample",
+      "ids": [
+        {
+          "kind": "arXiv",
+          "label": "arXiv:2601.00101",
+          "url": "https://arxiv.org/abs/2601.00101"
+        }
+      ],
+      "tracks": [
+        2,
+        4
+      ],
+      "section": "relevant",
+      "warn": false,
+      "raw_id": "arXiv:2601.00101",
+      "linkedin": true,
+      "summary": "Surveys 40+ LLM-based code review tools across five benchmarks and finds they catch most style/lint issues reliably but miss over half of logic-level bugs that human reviewers flag, especially in unfamiliar codebases."
+    },
+    {
+      "date_found": "2026-01-03",
+      "title": "CodeComplete: Benchmarking LLM-Based Code Completion in Production IDEs",
+      "authors": "C. Author, D. Writer",
+      "ids": [
+        {
+          "kind": "arXiv",
+          "label": "arXiv:2601.00203",
+          "url": "https://arxiv.org/abs/2601.00203"
+        },
+        {
+          "kind": "DOI",
+          "label": "10.1234/example.2026.002",
+          "url": "https://doi.org/10.1234/example.2026.002"
+        }
+      ],
+      "tracks": [
+        1,
+        3,
+        4
+      ],
+      "section": "relevant",
+      "warn": false,
+      "raw_id": "arXiv:2601.00203 · 10.1234/example.2026.002",
+      "linkedin": false,
+      "summary": "A year-long field study of code completion inside three production IDEs shows acceptance rate correlates more with completion latency than with suggestion accuracy — developers reject good-but-slow suggestions almost as often as bad ones."
+    },
+    {
+      "date_found": "2026-01-05",
+      "title": "Static Analysis Meets Generative AI: A Hybrid Approach to Bug Detection",
+      "authors": "E. Researcher",
+      "ids": [
+        {
+          "kind": "DOI",
+          "label": "10.1234/example.2026.005",
+          "url": "https://doi.org/10.1234/example.2026.005"
+        }
+      ],
+      "tracks": [
+        2
+      ],
+      "section": "relevant",
+      "warn": false,
+      "raw_id": "10.1234/example.2026.005",
+      "linkedin": false,
+      "summary": "Combines a traditional static analyzer's warnings with an LLM's second pass over the same diff; the hybrid cuts false positives by roughly a third versus either tool run alone."
+    },
+    {
+      "date_found": "2026-01-07",
+      "title": "Developer Trust in AI Pair Programming Tools: A Longitudinal Study",
+      "authors": "F. Scholar, G. Fellow",
+      "ids": [
+        {
+          "kind": "PMC",
+          "label": "PMC10000001",
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10000001/"
+        },
+        {
+          "kind": "PMID",
+          "label": "PMID 10000001",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/10000001/"
+        }
+      ],
+      "tracks": [
+        3,
+        4
+      ],
+      "section": "relevant",
+      "warn": false,
+      "raw_id": "PMC10000001 · PMID 10000001",
+      "linkedin": false,
+      "summary": "Tracks 120 developers over 12 months and finds trust in an AI pairing tool rises steadily for the first two months, then plateaus — but a single bad suggestion after that point causes trust to drop further and recover slower than an equivalent early mistake."
+    },
+    {
+      "date_found": "2026-01-09",
+      "title": "Sycophantic Suggestions? Evaluating Overconfidence in LLM Code Reviewers",
+      "authors": "H. Investigator",
+      "ids": [
+        {
+          "kind": "arXiv",
+          "label": "arXiv:2601.00909",
+          "url": "https://arxiv.org/abs/2601.00909"
+        }
+      ],
+      "tracks": [
+        1,
+        2
+      ],
+      "section": "relevant",
+      "warn": true,
+      "raw_id": "arXiv:2601.00909 ⚠ author list not yet verified",
+      "linkedin": true,
+      "summary": "When a human reviewer pushes back on an LLM's review comment, the model backs down and agrees over 80% of the time — even when its original comment was correct — raising concerns about relying on AI review to catch confident-but-wrong human pushback."
+    },
+    {
+      "date_found": "2026-01-11",
+      "title": "Multi-Agent Code Review Pipelines: Governance and Oversight Patterns",
+      "authors": "I. Analyst, J. Contributor",
+      "ids": [
+        {
+          "kind": "medRxiv",
+          "label": "medRxiv:2026.01.11.26300111",
+          "url": "https://www.medrxiv.org/content/10.1101/2026.01.11.26300111"
+        }
+      ],
+      "tracks": [
+        2,
+        4
+      ],
+      "section": "relevant",
+      "warn": false,
+      "raw_id": "medRxiv:2026.01.11.26300111",
+      "linkedin": false
+    },
+    {
+      "date_found": "2026-01-13",
+      "title": "A Registered Trial of AI-Assisted Code Review in Distributed Teams",
+      "authors": "K. Example",
+      "ids": [
+        {
+          "kind": "NCT",
+          "label": "NCT01234567",
+          "url": "https://clinicaltrials.gov/study/NCT01234567"
+        }
+      ],
+      "tracks": [
+        3
+      ],
+      "section": "relevant",
+      "warn": false,
+      "raw_id": "NCT01234567",
+      "linkedin": false,
+      "summary": "A pre-registered trial across 8 distributed teams found AI-assisted review shortened time-to-merge by ~18%, with no measurable change in post-merge defect rate — the time saved came from faster first-pass triage, not fewer review rounds."
+    },
+    {
+      "date_found": "2026-01-02",
+      "title": "A Survey of Prompt Engineering Techniques for Software Engineering Tasks",
+      "authors": "L. Person, M. Coauthor",
+      "ids": [
+        {
+          "kind": "arXiv",
+          "label": "arXiv:2601.00050",
+          "url": "https://arxiv.org/abs/2601.00050"
+        }
+      ],
+      "tracks": [
+        1
+      ],
+      "section": "related",
+      "warn": false,
+      "raw_id": "arXiv:2601.00050",
+      "linkedin": false,
+      "summary": "A broad survey cataloguing prompt-engineering techniques used across code generation, review, and testing tasks, organized into a taxonomy of six recurring patterns."
+    },
+    {
+      "date_found": "2026-01-06",
+      "title": "Human-AI Collaboration Patterns in Modern IDEs: A Scoping Review",
+      "authors": "N. Person",
+      "ids": [
+        {
+          "kind": "DOI",
+          "label": "10.1234/example.2026.006",
+          "url": "https://doi.org/10.1234/example.2026.006"
+        }
+      ],
+      "tracks": [
+        3
+      ],
+      "section": "related",
+      "warn": false,
+      "raw_id": "10.1234/example.2026.006",
+      "linkedin": false
+    },
+    {
+      "date_found": "2026-01-10",
+      "title": "Benchmark Saturation in Code Generation: Are We Measuring the Right Thing?",
+      "authors": "O. Person ⚠ full author list not verified",
+      "ids": [
+        {
+          "kind": "arXiv",
+          "label": "arXiv:2601.01010",
+          "url": "https://arxiv.org/abs/2601.01010"
+        }
+      ],
+      "tracks": [
+        4
+      ],
+      "section": "related",
+      "warn": true,
+      "raw_id": "arXiv:2601.01010",
+      "linkedin": false,
+      "summary": "Argues that top code-generation benchmarks are approaching saturation and proposes three harder, more realistic task variants that current leading models solve less than 40% of the time."
+    },
+    {
+      "date_found": "2026-01-14",
+      "title": "Toward Trustworthy Developer Tooling: An Ethics Checklist",
+      "authors": "P. Person, Q. Person",
+      "ids": [
+        {
+          "kind": "DOI",
+          "label": "10.1234/example.2026.014",
+          "url": "https://doi.org/10.1234/example.2026.014"
+        }
+      ],
+      "tracks": [
+        3
+      ],
+      "section": "related",
+      "warn": false,
+      "raw_id": "10.1234/example.2026.014",
+      "linkedin": false
+    }
+  ]
+}

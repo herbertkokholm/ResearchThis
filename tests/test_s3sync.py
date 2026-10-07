@@ -13,7 +13,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 from app.contract import ContractError
-from app.s3sync import fetch_findings_contract
+from app.s3sync import fetch_findings_contract, make_s3_client
 
 VALID_CONTRACT = {
     "contract_version": "1.0",
@@ -107,6 +107,32 @@ class S3PathTests(unittest.TestCase):
                 contract, source_last_modified = fetch_findings_contract(fallback)
             self.assertIsNone(source_last_modified)
             self.assertEqual(contract["contract_version"], "1.0")
+
+
+class MakeS3ClientTest(unittest.TestCase):
+    def test_passes_endpoint_for_r2(self):
+        env = {
+            "AWS_REGION": "auto",
+            "S3_ENDPOINT_URL": "https://acct.r2.cloudflarestorage.com",
+        }
+        with mock.patch.dict(os.environ, env), mock.patch("boto3.client") as mock_boto:
+            make_s3_client()
+        mock_boto.assert_called_once_with(
+            "s3",
+            region_name="auto",
+            endpoint_url="https://acct.r2.cloudflarestorage.com",
+        )
+
+    def test_no_endpoint_means_aws(self):
+        with (
+            mock.patch.dict(os.environ, {"AWS_REGION": "eu-north-1"}),
+            mock.patch("boto3.client") as mock_boto,
+        ):
+            os.environ.pop("S3_ENDPOINT_URL", None)
+            make_s3_client()
+        mock_boto.assert_called_once_with(
+            "s3", region_name="eu-north-1", endpoint_url=None
+        )
 
 
 if __name__ == "__main__":

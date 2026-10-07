@@ -10,8 +10,8 @@ Usage:
     python3 -m app.upload_config tracks path/to/tracks.json
     python3 -m app.upload_config feed path/to/feed.json
 
-Reads S3_BUCKET, S3_ROOT_FOLDER, S3_TRACKS_KEY/S3_FEED_KEY, AWS_REGION
-from the environment (or a local .env file, loaded the same way
+Reads S3_BUCKET, S3_ROOT_FOLDER, S3_TRACKS_KEY/S3_FEED_KEY, AWS_REGION,
+S3_ENDPOINT_URL from the environment (or a local .env file, loaded the same way
 server.py does).
 """
 
@@ -20,6 +20,8 @@ from __future__ import annotations
 import json
 import os
 import sys
+
+from app.s3sync import make_s3_client
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -76,11 +78,8 @@ def main(argv=None):
 
     root_folder = os.environ.get("S3_ROOT_FOLDER", "").strip("/")
     key = f"{root_folder}/{object_key}" if root_folder else object_key
-    region = os.environ.get("AWS_REGION")
 
-    import boto3
-
-    client = boto3.client("s3", region_name=region)
+    client = make_s3_client()
     client.put_object(
         Bucket=bucket,
         Key=key,

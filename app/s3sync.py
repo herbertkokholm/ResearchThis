@@ -36,10 +36,22 @@ def _s3_key(root_folder_env: str, key_env: str) -> str | None:
     return f"{root_folder}/{object_key}" if root_folder else object_key
 
 
-def _get_s3_object(bucket: str, key: str, region: str | None) -> tuple[str, str]:
+def make_s3_client():
+    """boto3 S3 client, honoring S3_ENDPOINT_URL for S3-compatible stores
+    such as Cloudflare R2 (https://<account_id>.r2.cloudflarestorage.com,
+    with AWS_REGION=auto). Unset means plain AWS S3.
+    """
     import boto3
 
-    client = boto3.client("s3", region_name=region)
+    return boto3.client(
+        "s3",
+        region_name=os.environ.get("AWS_REGION"),
+        endpoint_url=os.environ.get("S3_ENDPOINT_URL") or None,
+    )
+
+
+def _get_s3_object(bucket: str, key: str) -> tuple[str, str]:
+    client = make_s3_client()
     obj = client.get_object(Bucket=bucket, Key=key)
     body = obj["Body"].read().decode("utf-8")
     last_modified = obj["LastModified"].isoformat()
@@ -75,9 +87,8 @@ def fetch_findings_contract(local_fallback_path: str) -> tuple[dict, str | None]
         )
         return validate_and_normalize(_read_local_json(local_fallback_path)), None
 
-    region = os.environ.get("AWS_REGION")
     try:
-        body, last_modified = _get_s3_object(bucket, key, region)
+        body, last_modified = _get_s3_object(bucket, key)
         data = validate_and_normalize(json.loads(body))
         logger.info(
             "fetched s3://%s/%s (last_modified=%s, %d records)",
@@ -108,9 +119,8 @@ def fetch_json_config(key_env: str, local_fallback_path: str) -> dict:
     if not bucket or not key:
         return _read_local_json(local_fallback_path)
 
-    region = os.environ.get("AWS_REGION")
     try:
-        body, _ = _get_s3_object(bucket, key, region)
+        body, _ = _get_s3_object(bucket, key)
         return json.loads(body)
     except Exception:
         logger.exception(

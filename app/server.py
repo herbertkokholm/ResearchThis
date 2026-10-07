@@ -38,7 +38,7 @@ Routes:
                               app/feed.py), 503 if OPENAI_API_KEY is unset
     GET /healthz              200 OK (Render health check; never PIN-gated)
 
-Env vars: S3_BUCKET, AWS_REGION, S3_ROOT_FOLDER, S3_FINDINGS_KEY,
+Env vars: S3_BUCKET, AWS_REGION, S3_ENDPOINT_URL, S3_ROOT_FOLDER, S3_FINDINGS_KEY,
 S3_TRACKS_KEY, S3_FEED_KEY, REFRESH_TTL_SECONDS (default 60), PAGE_PIN
 (optional HTTP Basic gate), ZOTERO_LIBRARY_ID, ZOTERO_LIBRARY_TYPE,
 ZOTERO_API_KEY/ZOTERO_APP_KEY, ZOTERO_REFRESH_TTL_SECONDS (default 900),

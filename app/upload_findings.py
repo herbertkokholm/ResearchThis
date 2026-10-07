@@ -16,7 +16,7 @@ this repo is illustrative sample content, not any particular deployment's
 real data, so accidentally uploading it over real data in S3 shouldn't be
 one missing argument away.
 
-Reads S3_BUCKET, S3_ROOT_FOLDER, S3_FINDINGS_KEY, AWS_REGION from the
+Reads S3_BUCKET, S3_ROOT_FOLDER, S3_FINDINGS_KEY, AWS_REGION, S3_ENDPOINT_URL from the
 environment (or a local .env file, loaded the same way server.py does).
 """
 
@@ -28,6 +28,7 @@ import os
 import sys
 
 from app.contract import ContractError, validate_and_normalize
+from app.s3sync import make_s3_client
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -68,11 +69,8 @@ def upload_contract_to_s3(contract: dict) -> dict:
 
     root_folder = os.environ.get("S3_ROOT_FOLDER", "").strip("/")
     key = f"{root_folder}/{findings_key}" if root_folder else findings_key
-    region = os.environ.get("AWS_REGION")
 
-    import boto3
-
-    client = boto3.client("s3", region_name=region)
+    client = make_s3_client()
     client.put_object(
         Bucket=bucket,
         Key=key,

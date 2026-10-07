@@ -429,7 +429,8 @@ at all — `uv` reads `mcp_server.py`'s own PEP 723 header instead.
 | `S3_FINDINGS_KEY` | for S3 mode | Object key (under the prefix) for the findings contract `.json` |
 | `S3_TRACKS_KEY` | no | Object key for the theme-track taxonomy `.json` |
 | `S3_FEED_KEY` | no | Object key for the feed manifest/branding `.json` |
-| `AWS_REGION` | for S3 mode | e.g. `eu-north-1` |
+| `AWS_REGION` | for S3 mode | e.g. `eu-north-1` (`auto` for Cloudflare R2) |
+| `S3_ENDPOINT_URL` | no | S3-compatible endpoint, e.g. Cloudflare R2's `https://<account_id>.r2.cloudflarestorage.com` (no bucket in the URL). Unset = AWS S3 |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | for S3 mode | IAM credentials scoped to the bucket |
 | `REFRESH_TTL_SECONDS` | no | Re-fetch throttle, default `60` |
 | `ZOTERO_LIBRARY_ID` | for Zotero | Numeric user or group library ID |

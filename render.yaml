@@ -16,7 +16,7 @@ services:
       # whatever Render's account/service-creation-date default happens
       # to be (see their Python-version docs).
       - key: PYTHON_VERSION
-        value: 3.14.3
+        value: 3.14.9
       - key: AWS_ACCESS_KEY_ID
         sync: false
       - key: AWS_SECRET_ACCESS_KEY
@@ -73,7 +73,7 @@ services:
         - "docs/**"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.13.5
+        value: 3.14.9
       # Not a secret, but deliberately not given a `value:` here either --
       # see README's "MCP access" > "Deploying to Render" for what to set
       # it to. Keeping it out of committed render.yaml means there's no
